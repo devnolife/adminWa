@@ -14,6 +14,7 @@ const port = 8080;
 const {
     phoneNumberFormatter,
     messageFormatter,
+    messageFormaterUrutan,
 } = require('./helpers');
 
 
@@ -115,7 +116,69 @@ server.post('/api/whatsapp/send-message/:number/:name', async (req, res) => {
         return res.status(200).json({
             code: 200,
             status: true,
-            message: 'Kode TOTP berhasil dikirim',
+            message: 'Pesan berhasil dikirim',
+            data: null
+        });
+    } catch (err) {
+        return res.status(500).json({
+            code: 500,
+            status: false,
+            message: err.message || 'Internal server error',
+            data: null
+        });
+    }
+})
+
+server.post('/whatsapp/send-message/:number', async (req, res) => {
+    const number = phoneNumberFormatter(req.params.number);
+    const isRegistered = await client.isRegisteredUser(number);
+    const { message } = req.body
+    try {
+        if (!isRegistered) {
+            return res.status(422).json({
+                code: 422,
+                status: true,
+                message: 'Nomor belum terdaftar di WhatsApp',
+                data: null
+            });
+        }
+
+        await client.sendMessage(number, message);
+        return res.status(200).json({
+            code: 200,
+            status: true,
+            message: 'Pesan berhasil dikirim',
+            data: null
+        });
+    } catch (err) {
+        return res.status(500).json({
+            code: 500,
+            status: false,
+            message: err.message || 'Internal server error',
+            data: null
+        });
+    }
+})
+
+server.post('/whatsapp/send-message/:number/:name/:jumlahInputan/:urutan', async (req, res) => {
+    const number = phoneNumberFormatter(req.params.number);
+    const isRegistered = await client.isRegisteredUser(number);
+    const message = messageFormaterUrutan(req.params.name, req.params.jumlahInputan, req.params.urutan);
+    try {
+        if (!isRegistered) {
+            return res.status(422).json({
+                code: 422,
+                status: true,
+                message: 'Nomor belum terdaftar di WhatsApp',
+                data: null
+            });
+        }
+
+        await client.sendMessage(number, message);
+        return res.status(200).json({
+            code: 200,
+            status: true,
+            message: 'Pesan berhasil dikirim',
             data: null
         });
     } catch (err) {

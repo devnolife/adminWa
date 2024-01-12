@@ -16,7 +16,15 @@ const messageFormatter = function (relawan) {
     return `${formatted}`;
 }
 
+const messageFormaterUrutan = (relawan, jumlahInputan, urutan) => {
+    const formatted = `Assalamualaikum warahmatullahi wabarakatuh \n\nHalo ${relawan} ,kakak memiliki inputan dengan jumlah  ${jumlahInputan} terbanyak ke ${urutan}, Terima Kasih pastisipasinya , 
+    Kami nantikan inputan berikutnya,Kak. Jika mengalami kendala dalam aplikasi,segera hubungi kami.Terima kasih,Salam Kemenangan !!\n\nAdmin Aplikasi👍`
+    return `${formatted}`;
+
+}
+
 module.exports = {
     phoneNumberFormatter,
-    messageFormatter
+    messageFormatter,
+    messageFormaterUrutan
 }
